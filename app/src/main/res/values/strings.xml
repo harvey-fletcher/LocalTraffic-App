@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Local Traffic</string>
+    <string name="help_title">Information</string>
+    <string name="help_content">
+        Hello,\n \n
+        Thank you for downloading this LocalTraffic app. A very simple app designed to help commuters travelling on local roads near Andover.\n \n \n
+        I created this app because I believed it would be useful for myself, and am sharing it in case others might find it useful too.\n \n
+        Currently, the only supported roads are the A303, A34 and M3. If you would like another main road to become supported in future, please get in touch using the email below.\n \n \n
+        On the main page, there are 3 scrolling displays, when there is a traffic incident, new items will be added to the relevant scrolling display. If there is a delay, a red box will appear below the road name.\n \n \n
+        You can turn off notifications for roads by selecting the switch. You will still receive the update, but not the notification on your device.\n \n \n
+        If you encounter any issues, please email me on harvey.fletcher1@ntlworld.com. \n \n \n
+        Data source: Highways England (http://www.highways.gov.uk)
+    </string>
+</resources>

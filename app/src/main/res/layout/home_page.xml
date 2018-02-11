@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/MainContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/TitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/colorPrimaryDark">
+
+
+            <ImageView
+                android:id="@+id/GoBackIcon"
+                android:layout_marginLeft="10dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                app:srcCompat="@drawable/cars_icon" />
+
+            <TextView
+                android:id="@+id/AppName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/GoBackIcon"
+                android:layout_toRightOf="@+id/GoBackIcon"
+                android:text="@string/app_name"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"
+                android:textSize="30sp" />
+
+            <ImageView
+                android:id="@+id/InformationButton"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                app:srcCompat="@drawable/information_icon" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/A303Container"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/TitleBar">
+
+            <TextView
+                android:id="@+id/A303Tag"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_horizontal"
+                android:text="A303"
+                android:textAlignment="center"
+                android:textSize="20dp" />
+
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignLeft="@+id/A303Tag"
+                android:layout_alignStart="@+id/A303Tag"
+                android:layout_alignEnd="@+id/A303Tag"
+                android:layout_alignRight="@+id/A303Tag"
+                android:layout_below="@+id/A303Tag"
+                android:id="@+id/A303Indicator">
+
+            </RelativeLayout>
+
+            <Switch
+                android:id="@+id/A303Switch"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/A303Indicator"
+                android:layout_alignStart="@+id/A303Indicator"
+                android:layout_alignRight="@+id/A303Indicator"
+                android:layout_alignEnd="@+id/A303Indicator"
+                android:layout_below="@+id/A303Indicator"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/A303Tag"
+                android:layout_toRightOf="@+id/A303Tag">
+
+                <LinearLayout
+                    android:id="@+id/A303ScrollingContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/M3Container"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/A303Container" >
+
+            <TextView
+                android:id="@+id/M3Tag"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_horizontal"
+                android:text="M3"
+                android:textAlignment="center"
+                android:textSize="20dp" />
+
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignLeft="@+id/M3Tag"
+                android:layout_alignStart="@+id/M3Tag"
+                android:layout_alignEnd="@+id/M3Tag"
+                android:layout_alignRight="@+id/M3Tag"
+                android:layout_below="@+id/M3Tag"
+                android:id="@+id/M3Indicator">
+
+            </RelativeLayout>
+
+            <Switch
+                android:id="@+id/M3Switch"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/M3Indicator"
+                android:layout_alignStart="@+id/M3Indicator"
+                android:layout_alignRight="@+id/M3Indicator"
+                android:layout_alignEnd="@+id/M3Indicator"
+                android:layout_below="@+id/M3Indicator"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/M3Tag"
+                android:layout_toRightOf="@+id/M3Tag">
+
+                <LinearLayout
+                    android:id="@+id/M3ScrollingContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/A34Container"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/M3Container"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/A34Tag"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:text="A34"
+                android:textAlignment="center"
+                android:textSize="20dp" />
+
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignLeft="@+id/A34Tag"
+                android:layout_alignStart="@+id/A34Tag"
+                android:layout_alignEnd="@+id/A34Tag"
+                android:layout_alignRight="@+id/A34Tag"
+                android:layout_below="@+id/A34Tag"
+                android:id="@+id/A34Indicator">
+
+            </RelativeLayout>
+
+            <Switch
+                android:id="@+id/A34Switch"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/A34Indicator"
+                android:layout_alignStart="@+id/A34Indicator"
+                android:layout_alignRight="@+id/A34Indicator"
+                android:layout_alignEnd="@+id/A34Indicator"
+                android:layout_below="@+id/A34Indicator"/>
+
+            <ScrollView
+                android:id="@+id/A34Scroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/A34Tag"
+                android:layout_toRightOf="@+id/A34Tag">
+
+                <LinearLayout
+                    android:id="@+id/A34ScrollingContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>
