@@ -78,7 +78,7 @@ public class Settings extends AppCompatActivity{
                 PrefSwitch.setChecked(NotificationPreferences.getBoolean(Roads.get(i)));
             } catch (Exception e){
                 try{
-                    JSONObject NotificationPreferences = new JSONObject(sharedprefs().getString("NotificationPreferences",""));
+                    JSONObject NotificationPreferences = new JSONObject();
                     PrefSwitch.setChecked(true);
                     System.out.println(NotificationPreferences);
                     NotificationPreferences.put(Roads.get(i), true);

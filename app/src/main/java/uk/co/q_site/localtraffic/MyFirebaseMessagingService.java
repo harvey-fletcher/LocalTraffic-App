@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.PowerManager;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -78,57 +79,37 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             //We only need to inform the user if there is at least 1 event else just do nothing.
             if(TrafficInformation.length() > 0){
                 //Get the user's notification preferences so we can selectively display a notification
-                JSONObject NotificationPreferences = new JSONObject();
+                JSONObject NotificationPreferences;
                 try{
                     NotificationPreferences = new JSONObject(sharedPrefs.getString("NotificationPreferences",""));
                 } catch (Exception e){
-                    try{
-                        NotificationPreferences.put("A303",true);
-                        NotificationPreferences.put("M3",true);
-                        NotificationPreferences.put("A34",true);
-                        editor.putString("NotificationPreferences", NotificationPreferences.toString());
-                    } catch (Exception E){
-                        e.printStackTrace();
-                    }
+                    NotificationPreferences = new JSONObject();
                 }
 
-                //These are the values
-                boolean NotifyA303 = Boolean.valueOf(NotificationPreferences.getString("A303"));
-                boolean NotifyM3 = Boolean.valueOf(NotificationPreferences.getString("M3"));
-                boolean NotifyA34 = Boolean.valueOf(NotificationPreferences.getString("A34"));
-
                 //Do we want to display a notification?
-                int DisplayNotification = 1;
+                int DisplayNotification = 0;
 
                 try{
-                    String TrafficInformationString = new String(TrafficInformation.toString());
+                    for(int t=0;t<TrafficInformation.length();t++){
+                        JSONObject Event = TrafficInformation.getJSONObject(t);
+                        String RoadName = Event.getString("1").substring(0, Event.getString("1").indexOf(" "));
 
-                    if((TrafficInformationString.contains("A303") && !TrafficInformationString.contains("M3") && !TrafficInformationString.contains("A34")) && (NotifyA303 == false) ){
-                        DisplayNotification = 0;
-                    }
 
-                    if((!TrafficInformationString.contains("A303") && TrafficInformationString.contains("M3") && !TrafficInformationString.contains("A34")) && (NotifyM3 == false) ){
-                        DisplayNotification = 0;
-                    }
-
-                    if((!TrafficInformationString.contains("A303") && !TrafficInformationString.contains("M3") && TrafficInformationString.contains("A34")) && (NotifyA34 == false) ){
-                        DisplayNotification = 0;
-                    }
-
-                    if((NotifyA303 == false)&&(NotifyM3 == false)&&(NotifyA34 == false)){
-                        DisplayNotification = 0;
-                    }
-
-                    if((TrafficInformationString.contains("A303") && TrafficInformationString.contains("M3") && !TrafficInformationString.contains("A34")) && (NotifyA303 == false) && (NotifyM3 == false) ){
-                        DisplayNotification = 0;
-                    }
-
-                    if((TrafficInformationString.contains("A303") && !TrafficInformationString.contains("M3") && TrafficInformationString.contains("A34")) && (NotifyA303 == false) && (NotifyA34 == false) ){
-                        DisplayNotification = 0;
-                    }
-
-                    if((!TrafficInformationString.contains("A303") && TrafficInformationString.contains("M3") && TrafficInformationString.contains("A34")) && (NotifyM3 == false) && (NotifyA34 == false) ){
-                        DisplayNotification = 0;
+                        for(int p=0;p<NotificationPreferences.length();p++){
+                            try{
+                                boolean preference = NotificationPreferences.getBoolean(RoadName);
+                                if(!preference){
+                                    if(DisplayNotification != 1){
+                                        DisplayNotification = 0;
+                                    }
+                                } else {
+                                    DisplayNotification = 1;
+                                }
+                            } catch (Exception e){
+                                e.printStackTrace();
+                                DisplayNotification = 1;
+                            }
+                        }
                     }
                 } catch (Exception e){
                     e.printStackTrace();
@@ -144,6 +125,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     //Light up the screen
                     LightUpScreen();
                 }
+            } else {
+                TrafficInformation = new JSONArray();
             }
 
             //Update stored traffic information

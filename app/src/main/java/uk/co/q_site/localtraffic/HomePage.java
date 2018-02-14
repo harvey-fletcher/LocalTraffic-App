@@ -57,6 +57,7 @@ public class HomePage extends AppCompatActivity{
         //Get all the stored traffic information
         try{
             JSONArray TrafficInformation = new JSONArray(sharedPrefs().getString("TrafficInformation",""));
+            System.out.println(TrafficInformation);
             ArrayList<String> Roads = new ArrayList<String>();
             ArrayList<JSONArray> SortedTraffic = new ArrayList<JSONArray>();
 
