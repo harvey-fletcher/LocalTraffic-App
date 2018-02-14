@@ -1,5 +1,6 @@
 package uk.co.q_site.localtraffic;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.util.IndianCalendar;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,6 +18,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
 
@@ -28,17 +33,24 @@ public class HomePage extends AppCompatActivity{
     //This is the context that we run this pge under
     public Context ctx = HomePage.this;
 
+    //Used for scheduling
+    public Timer timer = new Timer();
+
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-        OrderTraffic();
-    }
+        ImageView SettingsIcon = (ImageView)findViewById(R.id.SettingsButton);
+        SettingsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomePage.this, Settings.class);
+                startActivity(intent);
+            }
+        });
 
-    public void onResume(){
-        super.onResume();
-        setContentView(R.layout.home_page);
-        OrderTraffic();
+        //Make sure we stay up to date with the cache
+        timer.schedule(new timedTask(),0,10000);
     }
 
     public void OrderTraffic(){
@@ -91,6 +103,7 @@ public class HomePage extends AppCompatActivity{
 
     public void DisplayRoads(ArrayList<String> Roads, ArrayList<JSONArray> Information){
         RelativeLayout InnerContainer = (RelativeLayout)findViewById(R.id.InnerContainer);
+        InnerContainer.removeAllViews();
 
         int ContainerID = (int)((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
 
@@ -149,6 +162,18 @@ public class HomePage extends AppCompatActivity{
 
             //Put that in the inner container so it is visible
             InnerContainer.addView(IndiContainer);
+        }
+    }
+
+    public class timedTask extends TimerTask{
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    OrderTraffic();
+                }
+            });
         }
     }
 

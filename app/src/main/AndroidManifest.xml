@@ -22,9 +22,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Help"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".Settings">
+
         </activity>
+
         <service
             android:name=".MyFirebaseInstanceIdService">
             <intent-filter>
