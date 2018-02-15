@@ -127,8 +127,7 @@ public class Settings extends AppCompatActivity{
                 JSONObject info = new JSONObject(TrafficInformation.getString(i));
 
                 //Split the road up into a manageable name
-                String road = info.getString("1");
-                road = road.substring(0, road.indexOf(" "));
+                String road = info.getString("road");
 
                 //These variables are used to tell if the road already exists in the array, and if so, where
                 int has_position = 0;
