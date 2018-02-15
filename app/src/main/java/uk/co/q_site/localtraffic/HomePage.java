@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.util.IndianCalendar;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
@@ -12,6 +13,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
 
@@ -35,6 +44,9 @@ public class HomePage extends AppCompatActivity{
 
     //Used for scheduling
     public Timer timer = new Timer();
+    public Timer TokenRefresher = new Timer();
+
+    public String AppHost = "http://82.10.188.99/TrafficInfo/api_v2.php?Token=";
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -51,14 +63,28 @@ public class HomePage extends AppCompatActivity{
 
         //Make sure we stay up to date with the cache
         timer.schedule(new timedTask(),0,10000);
+
+        //Ensure the token gets refreshed often enough (2 hour)
+        TokenRefresher.schedule(new tokenRefresh(),0,7200000);
     }
 
     public void OrderTraffic(){
         //Get all the stored traffic information
         try{
-            JSONArray TrafficInformation = new JSONArray(sharedPrefs().getString("TrafficInformation",""));
+            JSONArray TrafficInformation = new JSONArray();
+            try {
+                TrafficInformation = new JSONArray(sharedPrefs().getString("TrafficInformation", ""));
+            }catch (Exception e){
+                DisplayNoTraffic();
+            }
+
             ArrayList<String> Roads = new ArrayList<String>();
             ArrayList<JSONArray> SortedTraffic = new ArrayList<JSONArray>();
+
+            if(TrafficInformation.length() == 0){
+                DisplayNoTraffic();
+                return;
+            }
 
             for(int i=0;i<TrafficInformation.length();i++){
                 JSONObject info = new JSONObject(TrafficInformation.getString(i));
@@ -91,6 +117,17 @@ public class HomePage extends AppCompatActivity{
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void DisplayNoTraffic(){
+        RelativeLayout InnerContainer = (RelativeLayout)findViewById(R.id.InnerContainer);
+        InnerContainer.removeAllViews();
+
+
+        TextView NoTraffic = new TextView(ctx);
+        NoTraffic.setText("There is no traffic");
+        NoTraffic.setTextSize(25);
+        InnerContainer.addView(NoTraffic);
     }
 
     public void DisplayTraffic(ArrayList<JSONArray> SortedTraffic, ArrayList<String> Roads){
@@ -148,6 +185,32 @@ public class HomePage extends AppCompatActivity{
 
             //Put that in the inner container so it is visible
             InnerContainer.addView(IndiContainer);
+        }
+    }
+
+    public class tokenRefresh extends TimerTask{
+
+        @Override
+        public void run() {
+            String token = FirebaseInstanceId.getInstance().getToken();
+
+            String url = AppHost + token;
+
+            SyncHttpClient client = new SyncHttpClient();
+
+            System.out.println(url);
+
+            client.get(url, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    System.out.println("Token Refreshed!");
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    Toast.makeText(HomePage.this, "Error: " + statusCode, Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 

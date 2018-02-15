@@ -7,6 +7,8 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import java.util.Timer;
+
 import cz.msebera.android.httpclient.Header;
 
 /**
