@@ -15,8 +15,10 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Created by Harvey on 14/02/2018.
@@ -132,6 +134,32 @@ public class Settings extends AppCompatActivity{
                 //These variables are used to tell if the road already exists in the array, and if so, where
                 int has_position = 0;
 
+                //Have a look to see if the road is already listed
+                for(int r=0;r<Roads.size();r++){
+                    if(Roads.get(r).matches(road)){
+                        has_position = 1;
+                        break;
+                    }
+                }
+
+                //Only add the new road if it is not already in the list
+                if(has_position != 1){
+                    Roads.add(road);
+                }
+            }
+
+            //We need to set this so that we can cancel searching if we find the preference in the list of known roads.
+            int has_position = 0;
+
+            //These are the stored notification preferences
+            JSONObject NotificationPreferences = new JSONObject(sharedprefs().getString("NotificationPreferences",""));
+
+            //Get the keys from notification preferences
+            Iterator<?> Keys = NotificationPreferences.keys();
+
+            //Loop through the keys
+            while (Keys.hasNext()){
+                String road = (String)Keys.next();
                 //Have a look to see if the road is already listed
                 for(int r=0;r<Roads.size();r++){
                     if(Roads.get(r).matches(road)){
