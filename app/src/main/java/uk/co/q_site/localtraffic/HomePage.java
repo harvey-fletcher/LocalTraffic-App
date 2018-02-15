@@ -50,7 +50,7 @@ public class HomePage extends AppCompatActivity{
         });
 
         //Make sure we stay up to date with the cache
-        timer.schedule(new timedTask(),0,10000);
+        //timer.schedule(new timedTask(),0,10000);
     }
 
     public void OrderTraffic(){
@@ -134,7 +134,7 @@ public class HomePage extends AppCompatActivity{
 
             //Loop through all the information and append it to the string
             for(int a=0;a<Information.get(i).length(); a++){
-                try{
+/**                try{
                     //Get each traffic event
                     JSONArray Info = Information.get(i);
                     JSONObject Details = Info.getJSONObject(a);
@@ -143,9 +143,12 @@ public class HomePage extends AppCompatActivity{
                     InformationString = InformationString + "   " + Details.getString("1") + "\n";
                     InformationString = InformationString + "   " + Details.getString("2") + "\n";
                     InformationString = InformationString + "   " + Details.getString("3") + "\n \n \n";
+
                 } catch (Exception e){
                     e.printStackTrace();
                 }
+
+ **/
             }
 
             //Make the information string spannable

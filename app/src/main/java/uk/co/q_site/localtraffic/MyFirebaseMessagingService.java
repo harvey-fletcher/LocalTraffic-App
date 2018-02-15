@@ -17,6 +17,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -28,115 +29,142 @@ import java.util.Date;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        //This is the shared preferences editor
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MyFirebaseMessagingService.this).edit();
-
-        //These are the current shared preferences
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MyFirebaseMessagingService.this);
-
         try{
-            //First of all, get the data from the message
-            JSONObject MessageData = new JSONObject(remoteMessage.getData());
+            //Get the traffic information
+            JSONArray TrafficInformationItems = new JSONArray(new JSONObject(remoteMessage.getData()).getString("traffic_information"));
 
-            //This is the traffic information we want to save
-            JSONArray TrafficInformation = new JSONArray(MessageData.getString("traffic_information"));
+            //Are we going to display an alert?
+            int DisplayNotification = 0;
 
-            //Generate a notification ID  (Used for displaying multiple notifications)
-            int mNotificationID =  (int)((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-
-            //Get an instance of the notification manager service
-            NotificationManager mNotifyMgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-            //The notification builder
-            NotificationCompat.Builder NB;
-
-            //Android Oreo and above require a notification channel be created.
-            if(Build.VERSION.SDK_INT >= 26){
-                String channelId = "local_traffic_app_channel";
-                CharSequence channelName = "LocalTrafficApp";
-                int importance = NotificationManager.IMPORTANCE_LOW;
-                NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
-                mNotifyMgr.createNotificationChannel(notificationChannel);
-
-                NB = new NotificationCompat.Builder(this, "local_traffic_app_channel")
-                        .setSmallIcon(R.drawable.cars_icon);
-
-            } else {
-                //This is used to display notifications
-                NB = new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.cars_icon);
+            //This is an array of traffic events we have already received a notification for
+            JSONObject DisplayedNotifications = new JSONObject();
+            try{
+                DisplayedNotifications = new JSONObject(sharedprefs().getString("DisplayedNotifications",""));
+            } catch (Exception e){
+                e.printStackTrace();
             }
 
-            //Set the notification content
-            NB.setContentTitle("Traffic alert!");
-            NB.setContentText("Tap here to open app.");
+            //These are the notification preferences
+            JSONObject NotificationPreferences = new JSONObject();
+            try{
+                NotificationPreferences = new JSONObject(sharedprefs().getString("NotificationPreferences",""));
+            } catch (Exception e){
+                System.out.println("Something went wrong getting NotificationPreferences");
+                e.printStackTrace();
+            }
 
-            //Set up the notification so it opens the activity.
-            Intent openActivity = new Intent(MyFirebaseMessagingService.this, HomePage.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, openActivity, PendingIntent.FLAG_ONE_SHOT);
-            NB.setContentIntent(contentIntent);
+            if(TrafficInformationItems.length() == 0){
+                DisplayedNotifications = new JSONObject();
+                NotificationPreferences = new JSONObject();
+            }
 
-            //We only need to inform the user if there is at least 1 event else just do nothing.
-            if(TrafficInformation.length() > 0){
-                //Get the user's notification preferences so we can selectively display a notification
-                JSONObject NotificationPreferences;
+            for(int i=0;i<TrafficInformationItems.length();i++){
                 try{
-                    NotificationPreferences = new JSONObject(sharedPrefs.getString("NotificationPreferences",""));
-                } catch (Exception e){
-                    NotificationPreferences = new JSONObject();
-                }
+                    //Get the individual traffic alert
+                    JSONObject Item = new JSONObject(TrafficInformationItems.getString(i));
 
-                //Do we want to display a notification?
-                int DisplayNotification = 0;
+                    //What road is this alert for
+                    String RoadName = Item.getString("road");
 
-                try{
-                    for(int t=0;t<TrafficInformation.length();t++){
-                        JSONObject Event = TrafficInformation.getJSONObject(t);
-                        String RoadName = Event.getString("1").substring(0, Event.getString("1").indexOf(" "));
+                    //If the road has a notification preference, choose what to do, else, assume we ARE going to display the notification, and create a shared preference for it that says we do.
+                    try {
+                        boolean Preference = NotificationPreferences.getBoolean(RoadName);
 
+                        boolean AlreadyDisplayed = true;
 
-                        for(int p=0;p<NotificationPreferences.length();p++){
+                        try {
+                            DisplayedNotifications.getString(NotificationPreferences.getString(RoadName));
+                        } catch (Exception e){
                             try{
-                                boolean preference = NotificationPreferences.getBoolean(RoadName);
-                                if(!preference){
-                                    if(DisplayNotification != 1){
-                                        DisplayNotification = 0;
-                                    }
-                                } else {
-                                    DisplayNotification = 1;
-                                }
-                            } catch (Exception e){
+                                DisplayedNotifications.put(NotificationPreferences.getString(RoadName), true);
+                                AlreadyDisplayed = false;
+                            } catch (Exception E){
                                 e.printStackTrace();
-                                DisplayNotification = 1;
                             }
                         }
+
+                        if(Preference && !AlreadyDisplayed){
+                            DisplayNotification = 1;
+                        }
+                    } catch (Exception e){
+                        DisplayNotification = 1;
+
+                        try{
+                            NotificationPreferences.put(RoadName, true);
+                        } catch (Exception E){
+                            e.printStackTrace();
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //If we are wanting to display a notification, do that, else, do nothing.
+            if(DisplayNotification == 1){
+                try{
+                    //Generate a notification ID  (Used for displaying multiple notifications)
+                    int mNotificationID =  (int)((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+
+                    //Get an instance of the notification manager service
+                    NotificationManager mNotifyMgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+                    //The notification builder
+                    NotificationCompat.Builder NB;
+
+                    //Android Oreo and above require a notification channel be created.
+                    if(Build.VERSION.SDK_INT >= 26){
+                        String channelId = "LocalTrafficChannel";
+                        CharSequence channelName = "LocalTrafficChannel";
+                        int importance = NotificationManager.IMPORTANCE_LOW;
+                        NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
+                        mNotifyMgr.createNotificationChannel(notificationChannel);
+
+                        NB = new NotificationCompat.Builder(this, "LocalTrafficChannel")
+                                .setSmallIcon(R.drawable.cars_icon);
+
+                    } else {
+                        //This is used to display notifications
+                        NB = new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.cars_icon);
+                    }
+
+                    //Decide what type of notification it is
+                    NB.setContentTitle("Traffic Alert!");
+                    NB.setContentText("Tap here to open app.");
+
+                    Intent openActivity = new Intent(this, HomePage.class);
+
+                    //Set up the notification so it opens the activity.
+                    PendingIntent contentIntent = PendingIntent.getActivity(this, 0, openActivity, PendingIntent.FLAG_ONE_SHOT);
+                    NB.setContentIntent(contentIntent);
+
+                    //Build the notification and issue it
+                    mNotifyMgr.notify(mNotificationID, NB.build());
+
+                    //Light the screen up.
+                    LightUpScreen();
                 } catch (Exception e){
                     e.printStackTrace();
                 }
-
-                if(DisplayNotification == 1){
-                    //Issue the notification
-                    mNotifyMgr.notify(mNotificationID, NB.build());
-
-                    //Play the notification sound
-                    PlayNotificationSound();
-
-                    //Light up the screen
-                    LightUpScreen();
-                }
-            } else {
-                TrafficInformation = new JSONArray();
             }
 
-            //Update stored traffic information
-            editor.putString("TrafficInformation", TrafficInformation.toString());
-            editor.commit();
+            System.out.println("DISPLAY NOTIFICATION ===> " + DisplayNotification);
+            System.out.println("Traffic Info is now: \n"+ TrafficInformationItems);
 
-            System.out.println("These are the shared preferences \n" + sharedPrefs.getString("notifications", "") + "\n" + sharedPrefs.getString("TrafficInformation",""));
+            //This is the editor that will be used to save the traffic information
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MyFirebaseMessagingService.this).edit();
+            editor.putString("TrafficInformation", TrafficInformationItems.toString());
+            editor.putString("NotificationPreferences", NotificationPreferences.toString());
+            editor.putString("DisplayedNotifications", DisplayedNotifications.toString());
+            editor.commit();
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public SharedPreferences sharedprefs(){
+        return PreferenceManager.getDefaultSharedPreferences(MyFirebaseMessagingService.this);
     }
 
     public void PlayNotificationSound(){
