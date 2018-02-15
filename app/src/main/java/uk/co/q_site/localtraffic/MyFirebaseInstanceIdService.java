@@ -15,7 +15,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
-    public String AppHost = "http://82.10.188.99/TrafficInfo/RegisterToken.php?Token=";
+    public String AppHost = "http://82.10.188.99/TrafficInfo/api_v2.php?Token=";
 
     public void onCreate(){
         String token = FirebaseInstanceId.getInstance().getToken();
