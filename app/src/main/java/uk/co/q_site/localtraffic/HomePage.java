@@ -50,65 +50,56 @@ public class HomePage extends AppCompatActivity{
         });
 
         //Make sure we stay up to date with the cache
-        //timer.schedule(new timedTask(),0,10000);
+        timer.schedule(new timedTask(),0,10000);
     }
 
     public void OrderTraffic(){
         //Get all the stored traffic information
         try{
             JSONArray TrafficInformation = new JSONArray(sharedPrefs().getString("TrafficInformation",""));
-            System.out.println(TrafficInformation);
             ArrayList<String> Roads = new ArrayList<String>();
             ArrayList<JSONArray> SortedTraffic = new ArrayList<JSONArray>();
 
             for(int i=0;i<TrafficInformation.length();i++){
                 JSONObject info = new JSONObject(TrafficInformation.getString(i));
+                String RoadName = info.getString("road");
 
-                //Split the road up into a manageable name
-                String road = info.getString("1");
-                road = road.substring(0, road.indexOf(" "));
-
-                //These variables are used to tell if the road already exists in the array, and if so, where
                 int has_position = 0;
-                int position = 0;
 
-                //Have a look to see if the road is already listed
-                for(int r=0;r<SortedTraffic.size();r++){
-                    if(Roads.get(r).matches(road)){
+                for(int r=0;r<Roads.size();r++){
+                    if(Roads.get(r).matches(RoadName)){
                         has_position = 1;
-                        position = r;
-                        break;
                     }
                 }
 
-                //Add the new information in the right places.
-                if(has_position == 1){
-                    JSONArray ExistingEvents = SortedTraffic.get(position);
-                    ExistingEvents.put(info);
-                    SortedTraffic.add(position, ExistingEvents);
-                } else {
-                    JSONArray ExistingEvents = new JSONArray();
-                    ExistingEvents.put(info);
-                    Roads.add(road);
-                    SortedTraffic.add(ExistingEvents);
+                if(has_position == 0){
+                    Roads.add(RoadName);
                 }
             }
 
-            //Display the traffic events
-            System.out.println(Roads + "\n" + SortedTraffic);
-            DisplayRoads(Roads, SortedTraffic);
+            for(int i=0;i<Roads.size();i++){
+                SortedTraffic.add(new JSONArray());
+            }
+
+            for(int i=0;i<TrafficInformation.length();i++){
+                String RoadName = new JSONObject(TrafficInformation.getString(i)).getString("road");
+                JSONArray CurrentEvents = SortedTraffic.get(Roads.indexOf(RoadName));
+                CurrentEvents.put(new JSONObject(TrafficInformation.getString(i)));
+            }
+
+            DisplayTraffic(SortedTraffic, Roads);
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void DisplayRoads(ArrayList<String> Roads, ArrayList<JSONArray> Information){
+    public void DisplayTraffic(ArrayList<JSONArray> SortedTraffic, ArrayList<String> Roads){
         RelativeLayout InnerContainer = (RelativeLayout)findViewById(R.id.InnerContainer);
         InnerContainer.removeAllViews();
 
         int ContainerID = (int)((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
 
-        for(int i=0;i<Roads.size();i++){
+        for(int i=0;i<SortedTraffic.size();i++){
             //Create a relativelayout to put this information in
             RelativeLayout IndiContainer = new RelativeLayout(ctx);
 
@@ -126,29 +117,20 @@ public class HomePage extends AppCompatActivity{
             //Give this container an ID
             IndiContainer.setId(ContainerID);
 
-            //This is the road
-            String RoadName = Roads.get(i);
-
             //Apply the roadname to the spannable
-            String InformationString = RoadName + "\n\n";
+            String InformationString = Roads.get(i);
 
             //Loop through all the information and append it to the string
-            for(int a=0;a<Information.get(i).length(); a++){
-/**                try{
+            for(int a=0;a<SortedTraffic.get(i).length(); a++){
+                try{
                     //Get each traffic event
-                    JSONArray Info = Information.get(i);
+                    JSONArray Info = SortedTraffic.get(i);
                     JSONObject Details = Info.getJSONObject(a);
 
-                    InformationString = InformationString + "   " + Details.getString("0").replace("-","\n  ") + "\n";
-                    InformationString = InformationString + "   " + Details.getString("1") + "\n";
-                    InformationString = InformationString + "   " + Details.getString("2") + "\n";
-                    InformationString = InformationString + "   " + Details.getString("3") + "\n \n \n";
-
+                    InformationString = InformationString + "\n \n" + Details.getString("category") + "\n" + Details.getString("description").replace("|","\n") + "\n \n";
                 } catch (Exception e){
                     e.printStackTrace();
                 }
-
- **/
             }
 
             //Make the information string spannable
