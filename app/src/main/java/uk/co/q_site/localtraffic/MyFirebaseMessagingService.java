@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -97,6 +98,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+
+            try{
+                //We need to check to see if the user has specified times they want to display notifications
+                JSONObject NotificationTimings = new JSONObject(sharedprefs().getString("TimePreferences",""));
+                System.out.println(NotificationTimings);
+
+                //We only want to change the notification if it is currently set to display
+                if(DisplayNotification == 1){
+                    //Get the times in int format
+                    int time1A = Integer.parseInt(NotificationTimings.getString("time1A").substring(0,2).replace(":",""));
+                    int time1B = Integer.parseInt(NotificationTimings.getString("time1B").substring(0,2).replace(":",""));
+                    int time2A = Integer.parseInt(NotificationTimings.getString("time2A").substring(0,2).replace(":",""));
+                    int time2B = Integer.parseInt(NotificationTimings.getString("time2B").substring(0,2).replace(":",""));
+
+                    //Get the current hour
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH");
+                    String hoursString = sdf.format(new Date());
+                    int CurrentHour = Integer.parseInt(hoursString);
+
+                    //Do we want to cancel the notification?
+                    if(!(CurrentHour >= time1A && CurrentHour < time1B) && !(CurrentHour >= time2A && CurrentHour < time2B)){
+                        DisplayNotification = 0;
+                    }
+                }
+            } catch (Exception e){
+                System.out.println("The user has not specified times that they wish to get notifications");
             }
 
             //If we are wanting to display a notification, do that, else, do nothing.

@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -83,7 +84,8 @@
                 android:layout_marginRight="15dp"
                 android:layout_alignLeft="@+id/NotificationPreferencesText"
                 android:layout_alignStart="@+id/NotificationPreferencesText"
-                android:layout_below="@+id/NotificationPreferencesText">
+                android:layout_below="@+id/NotificationPreferencesText"
+                android:id="@+id/scrollView2">
 
                 <RelativeLayout
                     android:id="@+id/NotificationsPreferencesContainer"
@@ -93,6 +95,111 @@
 
                 </RelativeLayout>
             </ScrollView>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/scrollView2"
+                android:layout_alignStart="@+id/scrollView2"
+                android:layout_below="@+id/scrollView2"
+                android:layout_marginTop="16dp"
+                android:text="Only notify me between"
+                android:textSize="20sp"
+                tools:text="Only notify me between" />
+
+            <Switch
+                android:id="@+id/NotificationsTimesSW"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/textView"
+                android:layout_toEndOf="@+id/NotificationPreferencesText"
+                android:layout_toRightOf="@+id/NotificationPreferencesText" />
+
+            <RelativeLayout
+                android:id="@+id/TimesLayout"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_alignLeft="@+id/textView"
+                android:layout_alignStart="@+id/textView"
+                android:layout_below="@+id/textView">
+
+                <Spinner
+                    android:id="@+id/time1A"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/connector1"
+                    android:layout_alignLeft="@+id/time2A"
+                    android:layout_alignStart="@+id/time2A"
+                    android:layout_toLeftOf="@+id/connector1"
+                    android:layout_toStartOf="@+id/connector1" />
+
+                <Spinner
+                    android:id="@+id/time1B"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/connector1"
+                    android:layout_alignLeft="@+id/time2B"
+                    android:layout_alignStart="@+id/time2B" />
+
+                <TextView
+                    android:id="@+id/connector1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/connector2"
+                    android:layout_alignLeft="@+id/connector2"
+                    android:layout_alignStart="@+id/connector2"
+                    android:layout_marginBottom="30dp"
+                    android:text="and"
+                    tools:text="and" />
+
+                <TextView
+                    android:id="@+id/connector2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="and"
+                    tools:text="and" />
+
+                <TextView
+                    android:id="@+id/connector3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/connector2"
+                    android:layout_alignStart="@+id/connector2"
+                    android:layout_below="@+id/connector2"
+                    android:layout_marginTop="30dp"
+                    android:text="and"
+                    tools:text="and" />
+
+                <Spinner
+                    android:id="@+id/time2A"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/connector3"
+                    android:layout_toLeftOf="@+id/connector3"
+                    android:layout_toStartOf="@+id/connector3" />
+
+                <Spinner
+                    android:id="@+id/time2B"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/connector3"
+                    android:layout_toEndOf="@+id/connector3"
+                    android:layout_toRightOf="@+id/connector3" />
+
+                <Button
+                    android:id="@+id/saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Save"
+                    android:textSize="10sp"
+                    tools:text="Save" />
+            </RelativeLayout>
+
         </RelativeLayout>
 
     </RelativeLayout>

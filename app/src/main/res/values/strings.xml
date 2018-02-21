@@ -11,4 +11,27 @@
         If you encounter any issues, please email me on harvey.fletcher1@ntlworld.com. \n \n \n
         Data source: Highways England (http://www.highways.gov.uk)
     </string>
+    <string-array name="timespinner_values_hours">
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+    </string-array>
+    <string-array name="timespinner_values_minutes">
+        <item>00</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+    </string-array>
 </resources>
