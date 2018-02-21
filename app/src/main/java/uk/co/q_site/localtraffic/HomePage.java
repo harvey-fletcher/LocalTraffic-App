@@ -46,7 +46,7 @@ public class HomePage extends AppCompatActivity{
     public Timer timer = new Timer();
     public Timer TokenRefresher = new Timer();
 
-    public String AppHost = "http://82.10.188.99/TrafficInfo/api_v2.php?Token=";
+    public String AppHost = "http://82.10.188.99/LocalTrafficApp/api_v2.php?Token=";
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);

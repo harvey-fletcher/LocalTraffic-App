@@ -55,7 +55,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if(TrafficInformationItems.length() == 0){
                 DisplayedNotifications = new JSONObject();
-                NotificationPreferences = new JSONObject();
             }
 
             for(int i=0;i<TrafficInformationItems.length();i++){
