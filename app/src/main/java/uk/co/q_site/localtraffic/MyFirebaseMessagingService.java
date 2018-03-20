@@ -166,6 +166,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     PendingIntent contentIntent = PendingIntent.getActivity(this, 0, openActivity, PendingIntent.FLAG_ONE_SHOT);
                     NB.setContentIntent(contentIntent);
 
+                    //Ensures the notification gets removed.
+                    NB.setAutoCancel(true);
+
                     //Build the notification and issue it
                     mNotifyMgr.notify(mNotificationID, NB.build());
 
