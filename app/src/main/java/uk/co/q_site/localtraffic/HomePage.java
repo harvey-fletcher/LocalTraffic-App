@@ -46,7 +46,7 @@ public class HomePage extends AppCompatActivity{
     public Timer timer = new Timer();
     public Timer TokenRefresher = new Timer();
 
-    public String AppHost = "http://82.10.188.99/LocalTrafficApp/api_v2.php?Token=";
+    public String AppHost = "http://209.250.229.47/LocalTrafficApp/api_v2.php?Token=";
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -164,7 +164,13 @@ public class HomePage extends AppCompatActivity{
                     JSONArray Info = SortedTraffic.get(i);
                     JSONObject Details = Info.getJSONObject(a);
 
-                    InformationString = InformationString + "\n \n" + Details.getString("category") + "\n" + Details.getString("description").replace("|","\n") + "\n \n";
+                    InformationString+="\n \n";
+
+                    if(Details.getBoolean("isFuture")){
+                        InformationString+= "ADVANCED WARNING ("+ Details.getString("overallStart") +")\n";
+                    }
+
+                    InformationString+= Details.getString("category") + "\n" + Details.getString("description").replace("|","\n") + "\n \n";
                 } catch (Exception e){
                     e.printStackTrace();
                 }

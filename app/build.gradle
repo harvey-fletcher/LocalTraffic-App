@@ -6,8 +6,8 @@ android {
         applicationId "uk.co.q_site.localtraffic"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 4
-        versionName "4"
+        versionCode 5
+        versionName "5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
